@@ -22,8 +22,8 @@ const FlyingDirection = enum {
 };
 
 const saucer_dir_change_time = .{
-    .big = 400,
-    .small = 200,
+    .big = 200,
+    .small = 100,
 };
 
 pub const Saucer = struct {
@@ -115,7 +115,7 @@ fn getBigSaucer(allocator: std.mem.Allocator, right_left: bool) !Saucer {
         },
         .vel = .{
             .y = 0.0,
-            .x = if (right_left) -0.5 else 0.5,
+            .x = if (right_left) -2 else 2,
         },
         .polygon = .{
             .allocator = allocator,
@@ -161,9 +161,9 @@ fn spawnBigSaucer(
     try saucers.append(allocator, try getBigSaucer(allocator, right_left));
 
     big_saucer_spawn_countdown.* = switch (level) {
-        0...4 => 5000,
-        5...9 => 1000,
-        else => 500,
+        0...4 => 2500,
+        5...9 => 500,
+        else => 250,
     };
 }
 
@@ -180,7 +180,7 @@ fn getSmallSaucer(allocator: std.mem.Allocator, right_left: bool) !Saucer {
         },
         .vel = .{
             .y = 0.0,
-            .x = if (right_left) -0.5 else 0.5,
+            .x = if (right_left) -2 else 2,
         },
         .polygon = .{
             .allocator = allocator,
@@ -226,9 +226,9 @@ fn spawnSmallSaucer(
     try saucers.append(allocator, try getSmallSaucer(allocator, right_left));
 
     small_saucer_spawn_countdown.* = switch (level) {
-        0...4 => 10000,
-        5...9 => 3000,
-        else => 400,
+        0...4 => 5000,
+        5...9 => 1500,
+        else => 200,
     };
 }
 

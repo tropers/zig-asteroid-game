@@ -114,8 +114,8 @@ pub fn generateAsteroids(
         try asteroids.append(allocator, .{
             .pos = asteroid_pos,
             .vel = .{
-                .x = (-1.0 + rand.float(f32) * 2.0) / 2.0,
-                .y = (-1.0 + rand.float(f32) * 2.0) / 2.0,
+                .x = (-1.0 + rand.float(f32) * 7) / 2,
+                .y = (-1.0 + rand.float(f32) * 7) / 2,
             },
             .rotation = 0.0,
             .size = .big,

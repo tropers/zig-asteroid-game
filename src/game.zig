@@ -15,8 +15,8 @@ pub const BG_COLOR: rl.Color = .black;
 pub const LINE_THICK: f32 = 1.5;
 
 // Saucer values
-const BIG_SAUCER_INITIAL_SPAWN_INTERVAL = 5000;
-const SMALL_SAUCER_INITIAL_SPAWN_INTERVAL = 10000;
+const BIG_SAUCER_INITIAL_SPAWN_INTERVAL = 2500;
+const SMALL_SAUCER_INITIAL_SPAWN_INTERVAL = 5000;
 // const BIG_SAUCER_INITIAL_SPAWN_INTERVAL = 0;
 // const SMALL_SAUCER_INITIAL_SPAWN_INTERVAL = 0;
 
@@ -148,7 +148,7 @@ fn drawLives(lives: u32, playerPolygon: poly2d.Poly2d) !void {
 
 fn drawGame(game_state: *GameState) !void {
     rl.clearBackground(BG_COLOR);
-    rl.drawFPS(0, 0);
+    // rl.drawFPS(0, 0);
     try drawScore(game_state.score);
     try drawLives(game_state.lives, game_state.player.polygon);
 
@@ -217,11 +217,11 @@ pub fn explosion(allocator: std.mem.Allocator, particles: *std.array_list.Aligne
 
     for (0..rand.intRangeAtMost(usize, 5, 12)) |_| {
         if (velocity) |vel| {
-            x_vel = 1.5 * vel.x + (-1.0 + rand.float(f32) * 2.0);
-            y_vel = 1.5 * vel.y + (-1.0 + rand.float(f32) * 2.0);
+            x_vel = 1.5 * vel.x + (-1.0 + rand.float(f32) * 4.0);
+            y_vel = 1.5 * vel.y + (-1.0 + rand.float(f32) * 4.0);
         } else {
-            x_vel = -1.0 + rand.float(f32) * 2.0;
-            y_vel = -1.0 + rand.float(f32) * 2.0;
+            x_vel = -1.0 + rand.float(f32) * 4.0;
+            y_vel = -1.0 + rand.float(f32) * 4.0;
         }
 
         try particles.append(allocator, .{
@@ -257,7 +257,7 @@ fn resetPlayer(player: *pl.Player) void {
     };
     player.polygon = .{
         .allocator = player.allocator,
-        .points = &[_]rl.Vector2 {
+        .points = &[_]rl.Vector2{
             .{ .x = -1.0, .y = 1.0 },
             .{ .x = 1.0, .y = 0.0 },
             .{ .x = -1.0, .y = -1.0 },
@@ -303,7 +303,9 @@ fn handleLevelUp(game_state: *GameState) !void {
     // If no asteroids and saucers are left, level up!
     if (game_state.asteroids.items.len <= 0 and game_state.saucers.items.len <= 0) {
         try ast.generateAsteroids(game_state.allocator, &game_state.asteroids, game_state.level);
-        game_state.player.collision_cooldown = 250;
+
+        game_state.player.collision_cooldown = 100;
+
         calculateScore(
             &game_state.score,
             100,
@@ -353,13 +355,12 @@ pub fn runGame() !void {
     rl.initWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Asteroids!");
     defer rl.closeWindow(); // Close window and OpenGL context
 
-    rl.setTargetFPS(144);
+    rl.setTargetFPS(60);
 
     rl.initAudioDevice();
     defer rl.closeAudioDevice();
 
     const allocator = std.heap.page_allocator;
-    // const player_allocator = std.heap.page_allocator;
 
     var game_state = GameState{
         .allocator = allocator,

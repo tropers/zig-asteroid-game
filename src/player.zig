@@ -129,7 +129,7 @@ pub fn playerHit(
                 player.vel = .{ .x = 0.0, .y = 0.0 };
                 player.rotation = 0.0;
 
-                player.respawn_timer = 500;
+                player.respawn_timer = 250;
             }
         },
         else => {},
@@ -141,10 +141,10 @@ fn playerShoot(player: *Player, projectiles: *std.array_list.Aligned(game.Projec
         .pos = player.pos,
         .vel = .{
             // TODO: Magic numbers
-            .x = player.vel.x + @cos(player.rotation * math.pi / 180.0) * 4.0,
-            .y = player.vel.y + @sin(player.rotation * math.pi / 180.0) * 4.0,
+            .x = player.vel.x + @cos(player.rotation * math.pi / 180.0) * 8.0,
+            .y = player.vel.y + @sin(player.rotation * math.pi / 180.0) * 8.0,
         },
-        .life = 100,
+        .life = 50,
     });
 }
 
@@ -164,15 +164,15 @@ pub fn processPlayer(
                     sound_player.playSound(game_sounds.player_thrust);
 
                 player.vel = .{
-                    .x = player.vel.x + @cos(player.rotation * math.pi / 180.0) / 50.0,
-                    .y = player.vel.y + @sin(player.rotation * math.pi / 180.0) / 50.0,
+                    .x = player.vel.x + @cos(player.rotation * math.pi / 180.0) / 10.0,
+                    .y = player.vel.y + @sin(player.rotation * math.pi / 180.0) / 10.0,
                 };
             }
 
             if (rl.isKeyDown(.left)) {
-                player.rotation -= 1.8;
+                player.rotation -= 4;
             } else if (rl.isKeyDown(.right)) {
-                player.rotation += 1.8;
+                player.rotation += 4;
             }
 
             if (rl.isKeyPressed(.space) or rl.isKeyPressed(.x)) {
@@ -195,9 +195,9 @@ pub fn processPlayer(
             player.respawn_timer -= 1;
 
             if (player.respawn_timer <= 0) {
-                player.collision_cooldown = 100;
+                player.collision_cooldown = 50;
                 player.state = .alive;
-                player.blink_timer = 200;
+                player.blink_timer = 100;
             }
         },
         else => {},
