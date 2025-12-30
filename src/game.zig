@@ -335,17 +335,21 @@ fn playBeeps(game_state: *GameState) void {
     }
 }
 
-fn particleCleanup(particle_cleanup_timer: *u32, game_state: *GameState) void {
-    if (particle_cleanup_timer.* <= 0) {
+fn particleCleanup(game_state: *GameState) void {
+    const particle_timer = struct {
+        var time: u32 = PARTICLE_CLEANUP_INTERVAL;
+    };
+
+    if (particle_timer.time <= 0) {
         for (game_state.particles.items, 0..) |particle, i| {
             if (particle.life <= 0) {
                 _ = game_state.particles.orderedRemove(i);
             }
         }
 
-        particle_cleanup_timer.* = PARTICLE_CLEANUP_INTERVAL;
+        particle_timer.time = PARTICLE_CLEANUP_INTERVAL;
     } else {
-        particle_cleanup_timer.* -= 1;
+        particle_timer.time -= 1;
     }
 }
 
@@ -430,8 +434,6 @@ pub fn runGame() !void {
 
     var game_paused = false;
 
-    var particle_cleanup_timer: u32 = PARTICLE_CLEANUP_INTERVAL;
-
     // Main game loop
     while (!rl.windowShouldClose()) { // Detect window close button or ESC key
         rl.beginDrawing();
@@ -482,7 +484,7 @@ pub fn runGame() !void {
 
                 try handleLevelUp(&game_state);
 
-                particleCleanup(&particle_cleanup_timer, &game_state);
+                particleCleanup(&game_state);
 
                 try drawGame(&game_state);
 
